@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LumaBooth AirPrint Server</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f0f2f5;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+  h1 { margin: 0 0 20px; font-size: 1.5rem; color: #1a1a2e; }
+  h2 { margin: 0 0 16px; font-size: 1.1rem; color: #333; }
+  .container { max-width: 960px; margin: 0 auto; }
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.1);
+  }
+  .row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .col { flex: 1; min-width: 200px; }
+  label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 4px; margin-top: 14px; }
+  label:first-child { margin-top: 0; }
+  select, input[type=text], input[type=number] {
+    width: 100%; padding: 8px 10px; border: 1px solid #d0d5dd;
+    border-radius: 6px; font-size: 14px; background: #fff;
+    transition: border-color .15s;
+  }
+  select:focus, input:focus { outline: none; border-color: #4f8ef7; }
+  .slider-row { display: flex; align-items: center; gap: 10px; }
+  input[type=range] { flex: 1; }
+  .val { min-width: 36px; text-align: right; font-weight: 700; font-size: 14px; }
+  .toggle-row { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+  .toggle-label { font-size: 13px; font-weight: 600; color: #555; }
+  /* toggle switch */
+  .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider-sw {
+    position: absolute; cursor: pointer; inset: 0;
+    background: #ccc; border-radius: 22px; transition: .2s;
+  }
+  .slider-sw::before {
+    content: ""; position: absolute; height: 16px; width: 16px;
+    left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .2s;
+  }
+  input:checked + .slider-sw { background: #4f8ef7; }
+  input:checked + .slider-sw::before { transform: translateX(18px); }
+
+  button {
+    padding: 9px 18px; border: none; border-radius: 6px;
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity .15s;
+  }
+  button:hover { opacity: .85; }
+  .btn-primary { background: #4f8ef7; color: #fff; }
+  .btn-secondary { background: #6c757d; color: #fff; }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 12px;
+    font-size: 12px; font-weight: 600;
+  }
+  .badge-ok { background: #d1fae5; color: #065f46; }
+  .badge-error { background: #fee2e2; color: #991b1b; }
+  .badge-warn { background: #fef3c7; color: #92400e; }
+
+  .save-bar {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: #888; min-height: 22px;
+  }
+  .save-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #ccc; transition: background .3s;
+  }
+  .save-dot.saving { background: #f59e0b; }
+  .save-dot.saved  { background: #10b981; }
+  .save-dot.error  { background: #ef4444; }
+
+  .preview-grid { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 12px; }
+  .preview-box { flex: 1; min-width: 200px; text-align: center; }
+  .preview-box p { font-size: 13px; font-weight: 600; color: #555; margin: 0 0 8px; }
+  .preview-box img {
+    max-width: 100%; border: 1px solid #e5e7eb; border-radius: 6px;
+    background: #f9fafb;
+  }
+  .preview-box .placeholder {
+    height: 200px; display: flex; align-items: center; justify-content: center;
+    background: #f9fafb; border: 1px dashed #d0d5dd; border-radius: 6px;
+    color: #aaa; font-size: 13px;
+  }
+
+  #connection-usb { display: none; }
+  #sharpening-intensity-row { display: none; }
+
+  .status-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .status-item { font-size: 14px; }
+  .status-detail { font-size: 12px; color: #777; margin-left: 6px; }
+
+  .test-row { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+  .test-msg { font-size: 13px; color: #555; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>LumaBooth AirPrint Server</h1>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- Status                                                               -->
+  <!-- ------------------------------------------------------------------ -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h2 style="margin:0">System Status</h2>
+      <button class="btn-secondary btn-sm" onclick="refreshStatus()">Refresh</button>
+    </div>
+    <div class="status-row" id="status-display">
+      <span class="status-item">Loading…</span>
+    </div>
+  </div>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- Image Processing                                                     -->
+  <!-- ------------------------------------------------------------------ -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="margin:0">Image Processing</h2>
+      <div class="save-bar">
+        <div class="save-dot" id="save-dot"></div>
+        <span id="save-msg"></span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label for="dithering">Dithering Algorithm</label>
+        <select id="dithering" onchange="settingChanged()">
+          <option value="atkinson">Atkinson (recommended)</option>
+          <option value="floyd_steinberg">Floyd-Steinberg</option>
+          <option value="bayer">Bayer Ordered</option>
+        </select>
+      </div>
+      <div class="col">
+        <label for="paper-width">Paper Width (px)</label>
+        <input type="number" id="paper-width" value="576" min="100" max="1024"
+               onchange="settingChanged()">
+      </div>
+    </div>
+
+    <label>Brightness</label>
+    <div class="slider-row">
+      <input type="range" id="brightness" min="-50" max="50" value="0"
+             oninput="updateVal('brightness');settingChanged()">
+      <span class="val" id="brightness-val">0</span>
+    </div>
+
+    <label>Contrast</label>
+    <div class="slider-row">
+      <input type="range" id="contrast" min="-50" max="50" value="0"
+             oninput="updateVal('contrast');settingChanged()">
+      <span class="val" id="contrast-val">0</span>
+    </div>
+
+    <div class="toggle-row">
+      <label class="switch">
+        <input type="checkbox" id="sharpening-enabled" onchange="toggleSharpening();settingChanged()">
+        <span class="slider-sw"></span>
+      </label>
+      <span class="toggle-label">Enable Sharpening</span>
+    </div>
+
+    <div id="sharpening-intensity-row">
+      <label>Sharpening Intensity</label>
+      <div class="slider-row">
+        <input type="range" id="sharpening-intensity" min="0.5" max="3.0" step="0.1" value="1.5"
+               oninput="updateVal('sharpening-intensity');settingChanged()">
+        <span class="val" id="sharpening-intensity-val">1.5</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- Printer Connection                                                   -->
+  <!-- ------------------------------------------------------------------ -->
+  <div class="card">
+    <h2>Printer Connection</h2>
+
+    <label for="connection-type">Connection Type</label>
+    <select id="connection-type" onchange="toggleConnectionType();settingChanged()">
+      <option value="ethernet">Ethernet (LAN)</option>
+      <option value="usb">USB</option>
+    </select>
+
+    <div id="connection-ethernet">
+      <div class="row">
+        <div class="col">
+          <label for="eth-host">Printer IP Address</label>
+          <input type="text" id="eth-host" value="192.168.1.100" placeholder="192.168.1.100"
+                 onchange="settingChanged()">
+        </div>
+        <div class="col">
+          <label for="eth-port">Port</label>
+          <input type="number" id="eth-port" value="9100" min="1" max="65535"
+                 onchange="settingChanged()">
+        </div>
+      </div>
+    </div>
+
+    <div id="connection-usb">
+      <div class="row">
+        <div class="col">
+          <label for="usb-vid">Vendor ID (hex)</label>
+          <input type="text" id="usb-vid" value="0519" placeholder="0519"
+                 onchange="settingChanged()">
+        </div>
+        <div class="col">
+          <label for="usb-pid">Product ID (hex)</label>
+          <input type="text" id="usb-pid" value="0003" placeholder="0003"
+                 onchange="settingChanged()">
+        </div>
+      </div>
+    </div>
+
+    <div class="test-row">
+      <button class="btn-primary" onclick="testPrint()">Test Print</button>
+      <span class="test-msg" id="test-msg"></span>
+    </div>
+  </div>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- Live Preview                                                         -->
+  <!-- ------------------------------------------------------------------ -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <h2 style="margin:0">Live Preview</h2>
+      <button class="btn-secondary btn-sm" onclick="loadPreview()">Refresh</button>
+    </div>
+    <p style="font-size:13px;color:#888;margin:0 0 12px">
+      Preview updates automatically as settings change (uses bundled sample image).
+    </p>
+    <div class="preview-grid">
+      <div class="preview-box">
+        <p>Original</p>
+        <div class="placeholder" id="orig-placeholder">Loading…</div>
+        <img id="preview-original" src="" alt="Original" style="display:none">
+      </div>
+      <div class="preview-box">
+        <p>Processed (as it will print)</p>
+        <div class="placeholder" id="proc-placeholder">Loading…</div>
+        <img id="preview-processed" src="" alt="Processed" style="display:none">
+      </div>
+    </div>
+  </div>
+</div><!-- .container -->
+
+<script>
+// =========================================================================
+// State
+// =========================================================================
+let currentConfig = null;
+let saveTimer = null;
+let previewTimer = null;
+
+// =========================================================================
+// Init
+// =========================================================================
+async function init() {
+  try {
+    const res = await fetch('/api/config');
+    currentConfig = await res.json();
+    populateForm(currentConfig);
+  } catch (e) {
+    console.error('Failed to load config', e);
+  }
+  refreshStatus();
+  loadPreview();
+}
+
+// =========================================================================
+// Form population
+// =========================================================================
+function populateForm(cfg) {
+  const p = cfg.image_processing || {};
+  set('dithering', p.dithering || 'atkinson');
+  set('brightness', p.brightness ?? 0);
+  set('contrast',   p.contrast  ?? 0);
+  set('paper-width', p.paper_width_px || 576);
+  const sh = p.sharpening || {};
+  document.getElementById('sharpening-enabled').checked = sh.enabled || false;
+  set('sharpening-intensity', sh.intensity ?? 1.5);
+  toggleSharpening();
+
+  const pr = cfg.printer || {};
+  set('connection-type', pr.connection_type || 'ethernet');
+  const eth = pr.ethernet || {};
+  set('eth-host', eth.host || '192.168.1.100');
+  set('eth-port', eth.port || 9100);
+  const usb = pr.usb || {};
+  set('usb-vid', usb.vendor_id || '0519');
+  set('usb-pid', usb.product_id || '0003');
+  toggleConnectionType();
+
+  updateVal('brightness');
+  updateVal('contrast');
+  updateVal('sharpening-intensity');
+}
+
+// =========================================================================
+// Build config from form
+// =========================================================================
+function buildConfig() {
+  return {
+    image_processing: {
+      dithering:      get('dithering'),
+      brightness:     parseInt(get('brightness')),
+      contrast:       parseInt(get('contrast')),
+      sharpening: {
+        enabled:   document.getElementById('sharpening-enabled').checked,
+        intensity: parseFloat(get('sharpening-intensity')),
+      },
+      paper_width_px: parseInt(get('paper-width')),
+    },
+    printer: {
+      connection_type: get('connection-type'),
+      ethernet: {
+        host: get('eth-host'),
+        port: parseInt(get('eth-port')),
+      },
+      usb: {
+        vendor_id:  get('usb-vid'),
+        product_id: get('usb-pid'),
+      },
+    },
+    cups: (currentConfig || {}).cups || {},
+  };
+}
+
+// =========================================================================
+// Auto-save + live preview (debounced)
+// =========================================================================
+function settingChanged() {
+  setSaveState('saving');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(autoSave, 900);
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(refreshPreviewUnsaved, 600);
+}
+
+async function autoSave() {
+  try {
+    await fetch('/api/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(buildConfig()),
+    });
+    setSaveState('saved');
+    setTimeout(() => setSaveState('idle'), 2500);
+  } catch (e) {
+    setSaveState('error');
+  }
+}
+
+// =========================================================================
+// Preview
+// =========================================================================
+async function loadPreview() {
+  setPlaceholder(true, 'Loading…');
+  try {
+    const res = await fetch('/api/preview');
+    const data = await res.json();
+    showPreview(data);
+  } catch (e) {
+    setPlaceholder(true, 'Error loading preview');
+  }
+}
+
+async function refreshPreviewUnsaved() {
+  try {
+    const res = await fetch('/api/preview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(buildConfig()),
+    });
+    const data = await res.json();
+    if (data.processed) {
+      document.getElementById('preview-processed').src = 'data:image/png;base64,' + data.processed;
+      document.getElementById('preview-processed').style.display = '';
+      document.getElementById('proc-placeholder').style.display = 'none';
+    }
+  } catch (e) { /* ignore — preview is non-critical */ }
+}
+
+function showPreview(data) {
+  if (data.original) {
+    document.getElementById('preview-original').src = 'data:image/png;base64,' + data.original;
+    document.getElementById('preview-original').style.display = '';
+    document.getElementById('orig-placeholder').style.display = 'none';
+  }
+  if (data.processed) {
+    document.getElementById('preview-processed').src = 'data:image/png;base64,' + data.processed;
+    document.getElementById('preview-processed').style.display = '';
+    document.getElementById('proc-placeholder').style.display = 'none';
+  }
+  if (data.error) {
+    setPlaceholder(false, 'Error: ' + data.error);
+  }
+}
+
+function setPlaceholder(both, msg) {
+  if (both) {
+    document.getElementById('orig-placeholder').textContent = msg;
+    document.getElementById('orig-placeholder').style.display = '';
+    document.getElementById('preview-original').style.display = 'none';
+  }
+  document.getElementById('proc-placeholder').textContent = msg;
+  document.getElementById('proc-placeholder').style.display = '';
+  document.getElementById('preview-processed').style.display = 'none';
+}
+
+// =========================================================================
+// Test print
+// =========================================================================
+async function testPrint() {
+  const el = document.getElementById('test-msg');
+  el.textContent = 'Sending…';
+  try {
+    const res = await fetch('/api/test-print', { method: 'POST' });
+    const data = await res.json();
+    el.textContent = data.status === 'ok' ? 'Sent successfully!' : 'Error: ' + data.message;
+  } catch (e) {
+    el.textContent = 'Request failed — is the container running?';
+  }
+  setTimeout(() => { el.textContent = ''; }, 6000);
+}
+
+// =========================================================================
+// Status
+// =========================================================================
+async function refreshStatus() {
+  const el = document.getElementById('status-display');
+  try {
+    const res = await fetch('/api/status');
+    const data = await res.json();
+    const cupsOk = data.cups?.ok;
+    const prOk   = data.printer?.connected;
+    el.innerHTML = `
+      <span class="status-item">
+        CUPS: <span class="badge ${cupsOk ? 'badge-ok' : 'badge-error'}">${cupsOk ? 'OK' : 'Error'}</span>
+        <span class="status-detail">${esc(data.cups?.info || '')}</span>
+      </span>
+      <span class="status-item">
+        Printer: <span class="badge ${prOk ? 'badge-ok' : 'badge-warn'}">${prOk ? 'Connected' : 'Offline'}</span>
+        <span class="status-detail">${esc(data.printer?.error || data.printer?.status || '')}</span>
+      </span>
+    `;
+  } catch (e) {
+    el.innerHTML = '<span class="badge badge-error">Cannot reach server</span>';
+  }
+}
+
+// =========================================================================
+// UI helpers
+// =========================================================================
+function toggleConnectionType() {
+  const t = get('connection-type');
+  document.getElementById('connection-ethernet').style.display = t === 'ethernet' ? '' : 'none';
+  document.getElementById('connection-usb').style.display      = t === 'usb'      ? '' : 'none';
+}
+
+function toggleSharpening() {
+  document.getElementById('sharpening-intensity-row').style.display =
+    document.getElementById('sharpening-enabled').checked ? '' : 'none';
+}
+
+function updateVal(id) {
+  const el = document.getElementById(id);
+  const display = document.getElementById(id + '-val');
+  if (display) display.textContent = el.value;
+}
+
+function setSaveState(state) {
+  const dot = document.getElementById('save-dot');
+  const msg = document.getElementById('save-msg');
+  dot.className = 'save-dot ' + (state !== 'idle' ? state : '');
+  msg.textContent = state === 'saving' ? 'Saving…' : state === 'saved' ? 'Saved' : state === 'error' ? 'Save failed!' : '';
+}
+
+function get(id) { return document.getElementById(id).value; }
+function set(id, val) { document.getElementById(id).value = val; }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// =========================================================================
+// Boot
+// =========================================================================
+init();
+</script>
+</body>
+</html>

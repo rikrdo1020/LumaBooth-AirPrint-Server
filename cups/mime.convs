@@ -1,0 +1,10 @@
+# CUPS filter conversion rules for LumaBooth AirPrint Server
+# Format: source/type   destination/type   cost   filter-name
+#
+# All supported input formats route through lumabooth-filter, which handles
+# image processing and ESC/POS output.
+
+application/pdf          application/vnd.lumabooth-raw   100   lumabooth-filter
+image/jpeg               application/vnd.lumabooth-raw   100   lumabooth-filter
+image/png                application/vnd.lumabooth-raw   100   lumabooth-filter
+image/urf                application/vnd.lumabooth-raw   100   lumabooth-filter

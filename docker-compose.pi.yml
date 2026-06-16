@@ -1,0 +1,6 @@
+services:
+  airprint-server:
+    network_mode: host
+    ports: !reset []
+    devices:
+      - /dev/bus/usb:/dev/bus/usb

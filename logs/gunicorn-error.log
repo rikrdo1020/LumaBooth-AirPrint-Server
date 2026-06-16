@@ -1,0 +1,77 @@
+[2026-06-15 06:14:44 +0000] [1] [INFO] Starting gunicorn 22.0.0
+[2026-06-15 06:14:44 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-15 06:14:44 +0000] [1] [INFO] Using worker: sync
+[2026-06-15 06:14:44 +0000] [26] [INFO] Booting worker with pid: 26
+[2026-06-15 06:14:44 +0000] [42] [INFO] Booting worker with pid: 42
+[2026-06-15 06:16:40 +0000] [1] [INFO] Handling signal: term
+[2026-06-15 06:16:40 +0000] [26] [INFO] Worker exiting (pid: 26)
+[2026-06-15 06:16:40 +0000] [42] [INFO] Worker exiting (pid: 42)
+[2026-06-15 06:16:40 +0000] [1] [INFO] Shutting down: Master
+[2026-06-15 06:17:01 +0000] [1] [INFO] Starting gunicorn 22.0.0
+[2026-06-15 06:17:01 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-15 06:17:01 +0000] [1] [INFO] Using worker: sync
+[2026-06-15 06:17:01 +0000] [23] [INFO] Booting worker with pid: 23
+[2026-06-15 06:17:01 +0000] [24] [INFO] Booting worker with pid: 24
+[2026-06-15 06:20:19 +0000] [1] [INFO] Handling signal: term
+[2026-06-15 06:20:19 +0000] [24] [INFO] Worker exiting (pid: 24)
+[2026-06-15 06:20:19 +0000] [23] [INFO] Worker exiting (pid: 23)
+[2026-06-15 06:20:19 +0000] [1] [INFO] Shutting down: Master
+[2026-06-15 06:20:51 +0000] [1] [INFO] Starting gunicorn 22.0.0
+[2026-06-15 06:20:51 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-15 06:20:51 +0000] [1] [INFO] Using worker: sync
+[2026-06-15 06:20:51 +0000] [23] [INFO] Booting worker with pid: 23
+[2026-06-15 06:20:51 +0000] [24] [INFO] Booting worker with pid: 24
+[2026-06-15 06:29:04 +0000] [1] [INFO] Handling signal: term
+[2026-06-15 06:29:04 +0000] [23] [INFO] Worker exiting (pid: 23)
+[2026-06-15 06:29:04 +0000] [24] [INFO] Worker exiting (pid: 24)
+[2026-06-15 06:29:04 +0000] [1] [INFO] Shutting down: Master
+[2026-06-15 06:32:32 +0000] [1] [INFO] Starting gunicorn 22.0.0
+[2026-06-15 06:32:32 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-15 06:32:32 +0000] [1] [INFO] Using worker: sync
+[2026-06-15 06:32:32 +0000] [23] [INFO] Booting worker with pid: 23
+[2026-06-15 06:32:32 +0000] [24] [INFO] Booting worker with pid: 24
+[2026-06-15 06:35:44 +0000] [1] [INFO] Handling signal: term
+[2026-06-15 06:35:44 +0000] [23] [INFO] Worker exiting (pid: 23)
+[2026-06-15 06:35:44 +0000] [24] [INFO] Worker exiting (pid: 24)
+[2026-06-15 06:35:44 +0000] [1] [INFO] Shutting down: Master
+[2026-06-15 06:37:29 +0000] [1] [INFO] Starting gunicorn 22.0.0
+[2026-06-15 06:37:29 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-15 06:37:29 +0000] [1] [INFO] Using worker: sync
+[2026-06-15 06:37:29 +0000] [23] [INFO] Booting worker with pid: 23
+[2026-06-15 06:37:29 +0000] [24] [INFO] Booting worker with pid: 24
+[2026-06-15 06:38:34 +0000] [1] [INFO] Handling signal: term
+[2026-06-15 06:38:34 +0000] [23] [INFO] Worker exiting (pid: 23)
+[2026-06-15 06:38:34 +0000] [24] [INFO] Worker exiting (pid: 24)
+[2026-06-15 06:38:34 +0000] [1] [INFO] Shutting down: Master
+[2026-06-15 06:39:31 +0000] [1] [INFO] Starting gunicorn 22.0.0
+[2026-06-15 06:39:31 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-15 06:39:31 +0000] [1] [INFO] Using worker: sync
+[2026-06-15 06:39:31 +0000] [23] [INFO] Booting worker with pid: 23
+[2026-06-15 06:39:31 +0000] [39] [INFO] Booting worker with pid: 39
+[2026-06-15 06:41:30 +0000] [1] [INFO] Handling signal: term
+[2026-06-15 06:41:30 +0000] [23] [INFO] Worker exiting (pid: 23)
+[2026-06-15 06:41:30 +0000] [39] [INFO] Worker exiting (pid: 39)
+[2026-06-15 06:41:30 +0000] [1] [INFO] Shutting down: Master
+[2026-06-15 06:45:21 +0000] [1] [INFO] Starting gunicorn 22.0.0
+[2026-06-15 06:45:21 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-15 06:45:21 +0000] [1] [INFO] Using worker: sync
+[2026-06-15 06:45:21 +0000] [23] [INFO] Booting worker with pid: 23
+[2026-06-15 06:45:21 +0000] [24] [INFO] Booting worker with pid: 24
+[2026-06-15 06:47:15 +0000] [1] [INFO] Handling signal: term
+[2026-06-15 06:47:15 +0000] [23] [INFO] Worker exiting (pid: 23)
+[2026-06-15 06:47:15 +0000] [24] [INFO] Worker exiting (pid: 24)
+[2026-06-15 06:47:15 +0000] [1] [INFO] Shutting down: Master
+[2026-06-15 06:47:31 +0000] [1] [INFO] Starting gunicorn 22.0.0
+[2026-06-15 06:47:31 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-15 06:47:31 +0000] [1] [INFO] Using worker: sync
+[2026-06-15 06:47:31 +0000] [23] [INFO] Booting worker with pid: 23
+[2026-06-15 06:47:31 +0000] [24] [INFO] Booting worker with pid: 24
+[2026-06-15 06:52:03 +0000] [1] [INFO] Handling signal: term
+[2026-06-15 06:52:03 +0000] [24] [INFO] Worker exiting (pid: 24)
+[2026-06-15 06:52:03 +0000] [23] [INFO] Worker exiting (pid: 23)
+[2026-06-15 06:52:03 +0000] [1] [INFO] Shutting down: Master
+[2026-06-15 06:52:13 +0000] [1] [INFO] Starting gunicorn 22.0.0
+[2026-06-15 06:52:13 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-15 06:52:13 +0000] [1] [INFO] Using worker: sync
+[2026-06-15 06:52:13 +0000] [23] [INFO] Booting worker with pid: 23
+[2026-06-15 06:52:13 +0000] [24] [INFO] Booting worker with pid: 24

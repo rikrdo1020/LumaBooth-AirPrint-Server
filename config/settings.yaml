@@ -1,0 +1,20 @@
+cups:
+  description: Star mC-Print3 via LumaBooth AirPrint Server
+  location: Photo Booth
+  printer_name: LumaBooth-Thermal
+image_processing:
+  brightness: 0
+  contrast: 0
+  dithering: atkinson
+  paper_width_px: 576
+  sharpening:
+    enabled: false
+    intensity: 1.5
+printer:
+  connection_type: usb
+  ethernet:
+    host: 192.168.1.100
+    port: 9100
+  usb:
+    product_id: '0047'
+    vendor_id: 0519

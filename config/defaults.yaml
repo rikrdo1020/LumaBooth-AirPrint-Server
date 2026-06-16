@@ -1,0 +1,24 @@
+image_processing:
+  dithering: atkinson          # atkinson | floyd_steinberg | bayer
+  brightness: 0                # -50 to +50
+  contrast: 0                  # -50 to +50
+  sharpening:
+    enabled: false
+    intensity: 1.5             # 0.5 to 3.0
+  paper_width_px: 576          # 576px = 80mm at 203dpi (Star mC-Print3 native)
+
+printer:
+  connection_type: ethernet    # ethernet | usb
+  ethernet:
+    host: 192.168.1.100
+    port: 9100
+  usb:
+    vendor_id: "0519"          # Star Micronics USB VID (hex string, no 0x prefix)
+    product_id: "0047"         # Star MCP31 PID
+    in_ep: "82"                # bulk IN endpoint (hex, no 0x prefix)
+    out_ep: "01"               # bulk OUT endpoint (hex, no 0x prefix)
+
+cups:
+  printer_name: LumaBooth-Thermal
+  description: "Star mC-Print3 via LumaBooth AirPrint Server"
+  location: "Photo Booth"

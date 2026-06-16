@@ -1,0 +1,34 @@
+services:
+  airprint-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: lumabooth-airprint-server:latest
+    restart: unless-stopped
+
+    ports:
+      - "8080:8080"
+      - "631:631"
+
+    volumes:
+      # Persistent user configuration (survives container restarts and updates)
+      - ./config:/config
+      # Log directory exposed on the host for easy inspection
+      - ./logs:/var/log/lumabooth
+
+    environment:
+      - CONFIG_PATH=/config/settings.yaml
+      - DEFAULTS_PATH=/app/config/defaults.yaml
+      - LOG_LEVEL=INFO
+
+    # USB printer passthrough — requires usbipd-win on Windows (see README)
+    # Remove this block if no USB printer is connected.
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+
+    # Log rotation — protects the Raspberry Pi SD card from log-induced wear.
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

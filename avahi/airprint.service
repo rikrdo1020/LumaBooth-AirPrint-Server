@@ -1,0 +1,32 @@
+<?xml version="1.0" standalone='no'?>
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<!--
+  Avahi mDNS advertisement for LumaBooth AirPrint Server.
+
+  Critical iOS/iPadOS AirPrint requirements:
+    - _universal._sub._ipp._tcp subtype: iOS only shows the printer with this subtype
+    - URF= TXT record: must be non-empty; iOS checks this before showing the printer
+    - Color=F: signals grayscale-only printer (thermal printers are B&W)
+-->
+<service-group>
+  <name replace-wildcards="yes">LumaBooth Thermal @ %h</name>
+  <service>
+    <type>_ipp._tcp</type>
+    <subtype>_universal._sub._ipp._tcp</subtype>
+    <port>631</port>
+    <txt-record>txtvers=1</txt-record>
+    <txt-record>qtotal=1</txt-record>
+    <txt-record>rp=printers/LumaBooth-Thermal</txt-record>
+    <txt-record>ty=Star mC-Print3</txt-record>
+    <txt-record>adminurl=http://localhost:631</txt-record>
+    <txt-record>note=LumaBooth AirPrint Server</txt-record>
+    <txt-record>priority=0</txt-record>
+    <txt-record>product=(GPL Ghostscript)</txt-record>
+    <txt-record>pdl=application/octet-stream,image/urf,image/jpeg,application/pdf,image/png</txt-record>
+    <txt-record>URF=W8,SRGB24,RS600</txt-record>
+    <txt-record>Color=F</txt-record>
+    <txt-record>Duplex=F</txt-record>
+    <txt-record>Copies=T</txt-record>
+    <txt-record>UUID=1a2b3c4d-5e6f-7890-abcd-ef1234567890</txt-record>
+  </service>
+</service-group>

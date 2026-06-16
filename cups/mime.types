@@ -1,0 +1,8 @@
+# CUPS MIME type definitions for LumaBooth AirPrint Server
+# This file extends (not replaces) the system mime.types.
+
+# AirPrint Raster format sent by iOS/iPadOS
+image/urf                urf string(0,"UNIRAST")
+
+# Our internal type — the processed data ready for ESC/POS output
+application/vnd.lumabooth-raw    lumabooth

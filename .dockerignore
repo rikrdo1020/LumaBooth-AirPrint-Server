@@ -1,0 +1,12 @@
+.git
+.gitignore
+__pycache__
+**/__pycache__
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+logs/
+config/settings.yaml
+README.md
+*.md
